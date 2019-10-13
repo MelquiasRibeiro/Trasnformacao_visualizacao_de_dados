@@ -1,0 +1,68 @@
+---
+title: "Extrativismo no Maranhão "
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows   # orientação por linhas
+    social: menu   # insere menu de compartilhamento
+    source_code: embed   # disponibiliza o código
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+options(OutDec = ",") 
+library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+getwd()
+setwd('C:/Users/Melquias/Desktop/OMT/R') 
+extra <- rio::import("flex.csv") 
+
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+selectInput("Producao",  
+            label = h3("Selecione o produto"),   
+            choices = unique(extra$Producao),    
+            selected = 1)
+
+```
+
+**Produção da extração vegetal e da silvicultura**
+
+Fornece informações estatísticas sobre quantidade e valor dos principais produtos obtidos através do processo de exploração dos recursos florestais nativos, denominado extrativismo vegetal, bem como, quantidade e valor dos principais produtos da silvicultura, ou seja, produtos provenientes da exploração de maciços florestais plantados.
+
+fonte: IBGE - Produção da Extração Vegetal e da Silvicultura - 2018
+
+
+<img src="https://static.wixstatic.com/media/0a04bd_07b5f1048931440fbfd5485957148582~mv2.png/v1/fill/w_394,h_218,al_c,q_80,usm_0.66_1.00_0.01/logo%20hd.webp" weigth="500" width="230">
+
+
+
+Row
+-----------------------------------------------------------------------
+
+###            **QUANTIDADE PRODUZIDA NA EXTRAÇÃO VEGETAL**
+
+```{r}
+texto_media<- renderText(paste("A quantidade média produzida de",input$Producao,"no periodo de 2014 a 2017 foi aproximadamente", round(mean(extra$valor[extra$Producao == input$Producao]),2),  " toneladas"))
+
+
+renderPlot({
+  
+extra %>% 
+  filter(Producao == input$Producao) %>% 
+  ggplot(aes(x = Ano, y = valor)) +
+  geom_line(color= "#003366", size= 2) +
+  xlab('Ano')+ylab('Valor produzido (toneladas)')+
+  theme_gdocs()+
+  geom_point(color="#ff0000", size=4)+
+  labs(title = texto_media())
+  
+
+})
+```
+
