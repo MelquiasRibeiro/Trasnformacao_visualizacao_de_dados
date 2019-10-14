@@ -1,5 +1,5 @@
 ﻿getwd()
-setwd('C:/Users/Melquias/Desktop/OMT/Pesca/') # definindo diretorio de trabalho
+setwd('C:/Users/Melquias/Desktop/OMT/Babaçu/') # definindo diretorio de trabalho
 library(tidyr)
 library(ggplot2)
 library(dplyr)
