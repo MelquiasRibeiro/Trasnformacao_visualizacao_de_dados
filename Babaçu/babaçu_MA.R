@@ -44,21 +44,25 @@ extra<-extra[2:218,] #delimitando o DF
 nomes_colunas <- c ('Municípios',2014,2015,2016,2017,2018) #criando um array com novos nomes para as colunas
 colnames(extra) <- nomes_colunas # aplicando as alteraçoes nos nomes das colunas colunas
 
+#separando nossos dados por Anos
+View(extra)
+Babaçu_2014<-extra[,1:2]
+Babaçu_2015<-extra[,c(1,3)]
+Babaçu_2016<-extra[,c(1,4)]
+Babaçu_2017<-extra[,c(1,5)]
+Babaçu_2018<-extra[,c(1,6)]
+
 #verificando infomrçoes estatisticas sobre  nosso DF
 statistic14<-summary(Babaçu_2014)
 statistic15<-summary(Babaçu_2015)
 statistic16<-summary(Babaçu_2016)
 statistic17<-summary(Babaçu_2017)
 statistic18<-summary(Babaçu_2018)
-
 View(statistic14)
-#separando nossos dados por Anos
-
-Babaçu_2014<-extra[,1:2]
-Babaçu_2015<-extra[,c(1,3)]
-Babaçu_2016<-extra[,c(1,4)]
-Babaçu_2017<-extra[,c(1,5)]
-Babaçu_2018<-extra[,c(1,6)]
+View(statistic15)
+View(statistic16)
+View(statistic17)
+View(statistic18)
 
 
 #  Criando o Mapa 2014====================================================================================
@@ -88,7 +92,7 @@ choroLayer(
    method = "arith",
    nclass = 5,
    col = carto.pal(pal1 = "red.pal", n1 =5), #parametros de cor
-   breaks = c(1, 1000,2000, 3000, 4000, 5400), #intervalos de legenda
+   breaks = c(1, 1000,2000, 3000, 4000, 5500), #intervalos de legenda
    legend.title.txt = "Produção em toneladas", #titulo da legenda
    #parametros de tamanho da legenda
    legend.values.rnd = 2.5, 
@@ -107,7 +111,7 @@ north(pos = "topright")
 # escala
 #map.scale(x = -43.1000, y = -9.84000, relwidth=0.15, ratio=FALSE)
 dev.off()
-
+View(shape_mun_pc_2016)
 
 #  Criando o Mapa 2015====================================================================================
 
@@ -136,7 +140,7 @@ choroLayer(
    method = "arith",
    nclass = 5,
    col = carto.pal(pal1 = "red.pal", n1 =5), #parametros de cor
-   breaks = c(1, 1000,2000, 3000, 4000, 5400), #intervalos de legenda
+   breaks = c(1, 1000,2000, 3000, 4000, 5500), #intervalos de legenda
    legend.title.txt = "Produção em toneladas", #titulo da legenda
    #parametros de tamanho da legenda
    legend.values.rnd = 2.5, 
@@ -182,7 +186,7 @@ choroLayer(
    method = "arith",
    nclass = 5,
    col = carto.pal(pal1 = "red.pal", n1 =5), #parametros de cor
-   breaks = c(1, 1000,2000, 3000, 4000, 5400), #intervalos de legenda
+   breaks = c(1, 1000,2000, 3000, 4000, 5500), #intervalos de legenda
    legend.title.txt = "Produção em toneladas", #titulo da legenda
    #parametros de tamanho da legenda
    legend.values.rnd = 2.5, 
@@ -228,7 +232,7 @@ choroLayer(
    method = "arith",
    nclass = 5,
    col = carto.pal(pal1 = "red.pal", n1 =5), #parametros de cor
-   breaks = c(1, 1000,2000, 3000, 4000, 5400), #intervalos de legenda
+   breaks = c(1, 1000,2000, 3000, 4000, 5500), #intervalos de legenda
    legend.title.txt = "Produção em toneladas", #titulo da legenda
    #parametros de tamanho da legenda
    legend.values.rnd = 2.5, 
