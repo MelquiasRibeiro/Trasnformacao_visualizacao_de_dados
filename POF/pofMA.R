@@ -1,11 +1,13 @@
-﻿library(tidyverse)
-library(readr)
+﻿getwd()
+setwd('C:/Users/Melquias/Desktop/OMT/POF/') #
+library(tidyverse)
 library(readxl)
 library(dplyr)
 library(ggthemes)
 library(ggplot2)
 library(lme4)
 library(plotly)
+library(tidyr)
 
 rendimento_total_var_patrim_2017_2018 <- read_xlsx("21MA.xlsx",
                             skip = 9,
@@ -21,14 +23,25 @@ rendimento_total_var_patrim_2017_2018 <- read_xlsx("21MA.xlsx",
                             n_max = 22)
 rendimento_total_var_patrim_2017_2018<-na.omit(rendimento_total_var_patrim_2017_2018)
 
-Rendimento_do_trabalho<-rendimento_total_var_patrim_2017_2018[4:6,]
-Rendimento_do_trabalho<-Rendimento_do_trabalho %>% arrange(desc(total))
+rendimento_total_var_patrim_2017_2018[i,] <- gsub('[-]', '0', rendimento_total_var_patrim_2017_2018[i,])
 
-Rendimento_do_trabalhoG<-ggplot(Rendimento_do_trabalho, aes(x=origem_rendimento, y=total)) + 
-  geom_bar(stat="identity",fill= "#0C41F7") + 
+rendimento_total_var_patrim_2017_2018 %>% pivot_longer(
+  cols = ate_1908:Mais_de_23850,
+  names_to = c("faixa_de_renda"),
+  values_to = "valor") ->rendimento_total_var_patrim_2017_2018
+
+rendimento_total_var_patrim_2017_2018 %>%
+  ggplot(aes(x = faixa_de_renda, y = valor, fill =origem_rendimento)) +
+  geom_bar(stat = "identity", position = "dodge")
+
+
+
+Rendimento_do_trabalho<-rendimento_total_var_patrim_2017_2018[15:42,]
+ggplot(Rendimento_do_trabalho, aes(x = faixa_de_renda, y = valor, fill = origem_rendimento)) + 
+  geom_bar(stat="identity",position = "dodge") + 
   labs(x="", y="Rendimento em R$", title="Rendimento total do trabalho em suas categorias") + 
   theme_economist()
-plotly("Rendimento_do_trabalhoG")
+
 
 
 Transferência<-rendimento_total_var_patrim_2017_2018[8:13,]
