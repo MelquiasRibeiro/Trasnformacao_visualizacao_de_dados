@@ -1,0 +1,487 @@
+---
+title: "Rendimentos das Famílias Maranhenses"
+subtitle: "Uma análise da Pesquisa de Orçamentos Familiares - POF (2017-2018)"
+author: "OMT-MA"
+date: "29/10/2019"
+output:
+  pdf_document:
+    toc: true
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyr)
+library(dplyr)
+library(forcats)
+library(readxl)
+library(readr)
+library(stringr)
+library(kableExtra)
+library(ggplot2)
+library(ggthemes)
+library(ggrepel)
+library(scales)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+### IMPORTAÇÃO E MANIPULAÇÃO DOS DADOS 
+setwd("C:\\Users\\Melquias\\Desktop\\OMT\\POF") # indica o diretorio de trabalho 
+#setwd("C:\\Users\\omtmaranhao\\Documents\\POF\\")
+rm(list = ls())
+
+######################################## 2017-2018 REGISTRO - RENDIMENTO DO TRABALHO ######################################
+rendimento_total_var_patrim_2017_2018 <- read_xlsx("21MA.xlsx",
+                                                   skip = 11,
+                                                   sheet = 5,
+                                                   col_names = c("origem_rendimento",
+                                                                 "total",
+                                                                 "até 1908",
+                                                                 "mais de 1908 a 2862",
+                                                                 "mais de 2862 a 5724",
+                                                                 "mais de 5724 a 9540",
+                                                                 "mais de 9540 a 14310",
+                                                                 "mais de 14310 a 23850",
+                                                                 "mais de 23850"),
+                                                   n_max = 22)
+
+rendimento_total_var_patrim_2017_2018 <-  rendimento_total_var_patrim_2017_2018 %>%
+  na.omit()
+
+for(i in 1:nrow(rendimento_total_var_patrim_2017_2018)){
+  rendimento_total_var_patrim_2017_2018[i,-1] <- gsub('[-]', 0, rendimento_total_var_patrim_2017_2018[i,-1])
+}
+
+rendimento_total_var_patrim_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% 
+  select(-total)
+
+familias_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(origem_rendimento == "Número de famílias" |
+           origem_rendimento == "Tamanho médio da família")
+
+rendimento_total_var_patrim_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(origem_rendimento != "Número de famílias" &
+           origem_rendimento != "Tamanho médio da família")
+
+rendimento_total_var_patrim_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(origem_rendimento != "Rendimento total" &
+           origem_rendimento != "Rendimento do trabalho" &
+           origem_rendimento != "Transferência")
+
+nivel_1 <- c("Rendimento total", "Variação patrimonial")
+nivel_1 <- c(rep(nivel_1[1], 12), rep(nivel_1[2], 1))
+
+nivel_2 <- c("Rendimento do trabalho", "Transferência", "Rendimento de aluguel", 
+             "Outras rendas", "Rendimento não monetário", "Variação patrimonial")
+nivel_2 <-c(rep(nivel_2[1], 3),
+            rep(nivel_2[2], 6),
+            rep(nivel_2[3], 1),
+            rep(nivel_2[4], 1),
+            rep(nivel_2[5], 1),
+            rep(nivel_2[6], 1))
+
+rendimento_total_var_patrim_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% mutate(n1 = nivel_1, n2 = nivel_2)
+
+rendimento_total_var_patrim_2017_2018 <- rendimento_total_var_patrim_2017_2018 %>% 
+  gather(`até 1908`,`mais de 1908 a 2862`,`mais de 1908 a 2862`, `mais de 2862 a 5724`, 
+         `mais de 5724 a 9540`, `mais de 9540 a 14310`, `mais de 14310 a 23850`, `mais de 23850`, 
+         key = "classes_rendimento", value = "rendimento")
+
+rendimento_total_var_patrim_2017_2018$rendimento <- as.double(rendimento_total_var_patrim_2017_2018$rendimento)
+
+rendimento_total_var_patrim_2017_2018$classes_rendimento <- factor(rendimento_total_var_patrim_2017_2018$classes_rendimento,
+                                                                   levels = unique(rendimento_total_var_patrim_2017_2018$classes_rendimento))
+
+ordem_classes <- c("até 1908",
+                       "mais de 1908 a 2862",
+                       "mais de 2862 a 5724",
+                       "mais de 5724 a 9540",
+                       "mais de 9540 a 14310",
+                       "mais de 14310 a 23850",
+                       "mais de 23850")
+
+
+rendimento_total_var_patrim_2017_2018$n2 <- factor(rendimento_total_var_patrim_2017_2018$n2,
+                                                                   levels = unique(rendimento_total_var_patrim_2017_2018$n2))
+
+ordem_n2 <- c("Variação patrimonial",
+              "Rendimento não monetário",
+              "Outras rendas",
+              "Rendimento de aluguel",
+              "Transferência",
+              "Rendimento do trabalho")
+```
+
+# Sobre a Pesquisa
+
+A Pesquisa de Orçamentos Familiares - POF é uma pesquisa domiciliar,
+realizada por amostragem e que busca:
+
+> "Obter informações sobre a **estrutura de orçamentos** (aquisições de produtos, serviços e rendimentos), **estado nutricional e condições de vida** das famílias e população brasileira." 
+>
+> (IBGE, 2017)
+
+A pesquisa foi realizada em domicílios particulares localizados nas áreas urbanas e rurais de todas as Unidades da Federação (UF) e contou com uma amostra de cerca de 75.000 domicílios. Como a pesquisa foi realizada durante **12 meses**, além de identificar aquisições realizadas continuamente pelas famílias, durante todo o ano, também identificou as aquisições sazonais. 
+
+Para a realização deste artigo, foram utilizados dados apenas de **Distribuição e Rendimento total e variação patrimonial médio mensal familiar, por classes de rendimento total e variação patrimonial mensal familiar, segundo os tipos de origem do rendimento, com indicação do número e tamanho médio das famílias - Maranhão - período 2017-2018.**
+
+## Conceitos
+
+
+* **Rendimento total e variação patrimonial =** Rendimento total **+** Variação patrimonial
+  * **Rendimento total =** Rendimento do trabalho **+** Transferência **+** Rendimento de aluguel **+** Rendimento não monetário
+    * **Rendimento do trabalho =** Empregado **+** Empregador **+** Conta própria
+      * **Empregador:** Pessoa que trabalhava explorando o seu próprio empreendimento, tendo pelo menos um empregado e contando, ou não, com a ajuda de trabalhador não remunerado.
+      * **Conta própria:** Pessoa que trabalhava explorando o seu próprio empreendimento, sozinha ou com sócio, sem ter empregado e contando, ou não, com a ajuda de trabalhador não remunerado.
+    * **Transferência =** Aposentadoria e pensão do INSS **+**  Aposentadoria, pensão da previdência pública **+** Aposentadoria, pensão da previdência privada **+** Programas sociais federais **+** Pensão alimentícia, mesada ou doação **+**  Outras transferências.
+
+  
+
+
+# Famílias
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+familias_2017_2018 <- familias_2017_2018 %>%  gather(`até 1908`,`mais de 1908 a 2862`,`mais de 1908 a 2862`, `mais de 2862 a 5724`,`mais de 5724 a 9540`, `mais de 9540 a 14310`, `mais de 14310 a 23850`, `mais de 23850`, key = "classes_rendimento", value = "valor")
+
+familias_2017_2018$valor <- as.double(familias_2017_2018$valor)
+
+n_familias_2017_2018 <- familias_2017_2018 %>% 
+  filter(origem_rendimento == "Número de famílias") %>% 
+  mutate(percentual = round(valor/sum(valor) * 100, 2)) 
+  
+t_familias_2017_2018 <- familias_2017_2018 %>% 
+  filter(origem_rendimento == "Tamanho médio da família")
+
+```
+
+No estado, existiam  **`r format(sum(n_familias_2017_2018$valor), big.mark = ".", decimal.mark = ",")` famílias**. Dessas, `r paste(format(as.double(n_familias_2017_2018[1, "percentual"]), big.mark = ".", decimal.mark = ","), "%", sep = "")` ganhavam `r as.character(n_familias_2017_2018[1, "classes_rendimento"])` reais, os que ganhavam `r as.character(n_familias_2017_2018[2, "classes_rendimento"])` reais totalizavam `r paste(format(as.double(n_familias_2017_2018[2, "percentual"]), big.mark = ".", decimal.mark = ","), "%", sep = "")`, por outro lado, os que ganhavam entre `r as.character(n_familias_2017_2018[3, "classes_rendimento"])` reais representavam  `r paste(as.double(n_familias_2017_2018[3, "percentual"], big.mark = ".", decimal.mark = ","), "%", sep = "")` das famílias maranhenses, assim, essas três primeiras classes de rendimentos totalizavam `r paste(format(sum(n_familias_2017_2018[1:3, 4]), big.mark = ".", decimal.mark = ","), "%", sep = "")` das famílias do Maranhão.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+ n_familias_2017_2018 %>% 
+  ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = valor)) +
+  geom_col(fill = "darksalmon", position = "stack", colour = "black", show.legend = FALSE) +
+  labs(x = "Classes de rendimento",
+       y = "Número de famílias",
+       title = " Gráfico 1 -  Quantidade de famílias maranhenses por classes de rendimento (2017-2018)",
+              caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = number(valor, big.mark = ".", decimal.mark = ",")),
+            position = position_stack(0.9), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = number)
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+familias_2017_2018 <- inner_join(n_familias_2017_2018, t_familias_2017_2018, by = "classes_rendimento")
+
+familias_2017_2018 <- familias_2017_2018 %>% select(-origem_rendimento.x, -origem_rendimento.y) %>%
+  rename(n_familias = valor.x) %>% 
+  rename(t_familias = valor.y)
+
+familias_2017_2018 <- familias_2017_2018 %>% 
+  mutate(pessoas = n_familias * t_familias)
+```
+
+Uma família maranhense possui, em média, **`r format(round(sum(familias_2017_2018$pessoas)/sum(familias_2017_2018$n_familias), 2), big.mark = ".", decimal.mark = ",")` pessoas**. Analisando o tamanho médio da família maranhense por classes de rendimento, observa-se que as famílias maranhenses das classes de rendimento intermediárias são as que possuem, em média, maior quantidade de membros. Por outro lado, as famílias da classe de rendimento que ganham mais de 23.850 reais possuem a menor média de pessoas por  grupo familiar, apenas `r format(as.double(familias_2017_2018[7, "t_familias"]), big.mark = ".", decimal.mark = ",")` pessoas.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+t_familias_2017_2018 %>%
+  ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = valor)) +
+  geom_col(fill = "darksalmon", position = "stack", colour = "black", show.legend = FALSE) +
+  labs(x = "Classes de rendimento",
+       y = "Tamanho médio",
+       title = " Gráfico 2 -  Tamanho médio das famílias maranhenses por classes de rendimento (2017-2018)",
+              caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = number(valor, big.mark = ".", decimal.mark = ",", digits = 2, accuracy = .01)),
+            position = position_stack(0.9), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = number)
+
+```
+
+# Rendimentos 
+
+Enquanto a soma de rendimento total e a variação patrimonial das famílias que ganham **até R$ 1.908** é de `r format(as.double(sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "até 1908"])), big.mark = ".", decimal.mark = ",", digits = 6)`, por outro a soma rendimento total e a variação patrimonial das famílias que ganham **mais de 23.850 reais** é de R$ `r format(as.double(sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "mais de 23850"])), big.mark = ".", decimal.mark = ",", digits = 7)`, uma diferença de R$ `r format(as.double(sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "mais de 23850"]) - sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "até 1908"])), big.mark = ".", decimal.mark = ",", digits = 7)` reais, ou seja, de **`r paste(format(as.double(sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "mais de 23850"]) / sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "até 1908"]) * 100), big.mark = ".", decimal.mark = ",", digits = 6), "%", sep = "")`**. A diferença da classe que possui o maior rendimento para as demais é enorme, por exemplo, enquanto a segunda classe com maior rendimento (mais de 14.310 a 23.850 reais) possui um Rendimento total e variação patrimonial médio mensal familiar de `r format(sum(rendimento_total_var_patrim_2017_2018$rendimento[rendimento_total_var_patrim_2017_2018$classes_rendimento == "mais de 14310 a 23850"]), big.mark = ".", decimal.mark = ",", digits = 7)` reais, a classe com maior rendimento ganha `r format(as.double(rendimento_total_var_patrim_2017_2018[91, "rendimento"]), big.mark = ".", decimal.mark = ",", digits = 7)` reais apenas com **variação patrimonial**. Vale lembrar que o Maranhão possui `r format(as.double(n_familias_2017_2018[1, "valor"]), big.mark = ".", decimal.mark = ",", digits = 7)` famílias que ganham até 1.908 reais e apenas `r format(as.double(n_familias_2017_2018[7, "valor"]), big.mark = ".", decimal.mark = ",", digits = 7)` famílias que ganham acima de 23.850 reais.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+a <- rendimento_total_var_patrim_2017_2018 %>% 
+  group_by(classes_rendimento, n2) %>% 
+  summarise(total = sum(rendimento)) %>%
+  ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = total, 
+             fill = fct_relevel(n2, ordem_n2))) +
+  geom_col(position = "stack", colour = "black") +
+  labs(x = "Classes de rendimento",
+       y = "Valor do Rendimento (R$)",
+       fill = "Rendimento e variação patrimonial",
+       title = " Gráfico 3 -  Rendimento total e variação patrimonial médio mensal familiar,  por classes de rendimento total e variação\npatrimonial mensal familiar - Maranhão (2017-2018)",
+              caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = number(total, big.mark = ".", decimal.mark = ",")),
+            position = position_stack(.5), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(legend.position = "bottom",
+        axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = number)
+a + scale_fill_brewer(palette="Reds")
+
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+rendimento_trabalho <- rendimento_total_var_patrim_2017_2018 %>% 
+  group_by(classes_rendimento, n2) %>% 
+  summarise(total = sum(rendimento)) %>%
+  mutate(percentual = total/ sum(total) * 100)
+```
+
+Em todas as classes de rendimento, a maior fonte de rendimento é o trabalho, a exceção é a classe que ganha mais, ou seja, mais de R$ 23.850. Para esta classe, sua maior fonte de rendimento (48,8%) é a variação patrimonial. Também se destaca o grande peso que as transferências têm na formação de renda das famílias maranhenses que ganham até R$ 5.724. Para aquelas famílias que ganham até 1.908, o peso é de 34,5%; por seguinte, as famílias que ganham mais de R$ 1.908 a R$ 2.862 o peso é de 38,8%; e, por último, as famílias que ganham mais de R$ 2.862 a R$ 5.724 o impacto das transferências no seu rendimento foi de 27,3%.
+
+Ainda se aponta que o **rendimento não monetário** possui uma relação inversamente proporcional ao rendimento total, ou seja, quanto menor o rendimento da família, maior é o peso do rendimento não monetário no rendimento total dessa família e quanto maior o rendimento da família, menor é o peso do rendimento não monetário no rendimento total dessa família, conforme o gráfico 4.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+a <- rendimento_total_var_patrim_2017_2018 %>% 
+  group_by(classes_rendimento, n2) %>% 
+  summarise(total = sum(rendimento)) %>%
+  mutate(percentual = total/ sum(total)) %>% 
+  ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = total, 
+             fill = fct_relevel(n2, ordem_n2))) +
+  geom_col(position = "fill", colour = "black") +
+  labs(x = "Classes de rendimento",
+       y = "Participação",
+       fill = "Rendimento e variação patrimonial",
+       title = " Gráfico 4 -  Distribuição do rendimento total e variação patrimonial médio mensal familiar,  por classes de rendimento total e\nvariação patrimonial mensal familiar - Maranhão (2017-2018)",
+       caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = percent(percentual, big.mark = ".", decimal.mark = ",")),
+            position = position_fill(.5), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(legend.position = "bottom",
+        axis.title.y = element_text(size=12, face="bold"),
+        axis.title.x = element_text(size=12, face="bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = percent)
+a + scale_fill_brewer(palette="Reds")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ordem_trabalho <- c("Conta própria",
+                    "Empregador",
+                    "Empregado")
+
+empregado_mais23850 <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Rendimento do trabalho") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total) * 100) %>% 
+  filter(origem_rendimento == "Empregado" & classes_rendimento == "mais de 23850")
+
+empregado <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Rendimento do trabalho") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total) * 100) %>% 
+  filter(origem_rendimento == "Empregado")
+
+conta_propria <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Rendimento do trabalho") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total) * 100) %>% 
+  filter(origem_rendimento == "Conta própria")
+
+empregador <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Rendimento do trabalho") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total) * 100) %>% 
+  filter(origem_rendimento == "Empregador")
+
+```
+
+Em todas as classes de rendimento, a participação do Empregado no Rendimento do Trabalho é de mais de 50%, a exceção é a classe de rendimento que ganha acima de R$ 23.850. Para esta categoria, a participação foi de `r paste(format(as.double(empregado_mais23850[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")`. As outras duas subclasses de Rendimento do Trabalho: Conta própria e Empregador possuem relações diretamente e inversamente proporcionais, respectivamente, as classes de rendimento. Enquanto Conta própria tem participação de `r paste(format(as.double(conta_propria[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "") ` para as famílias que ganham `r conta_propria[1, "classes_rendimento"]` reais, para as famílias que ganham `r conta_propria[7, "classes_rendimento"]` reais, por outro lado, a participação é `r paste(format(as.double(conta_propria[7, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "") `; Empregador tem participação de `r paste(format(as.double(empregador[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 1), "%", sep = "")` para aquelas famílias com rendimento `r empregador[1, "classes_rendimento"]` e de `r paste(format(as.double(empregador[7, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` para os grupos familiares com rendimento de `r empregador[7, "classes_rendimento"]` reais, conforme o gráfico 5.
+
+Por fim, destaca-se que o gráfico citado deve ser analisado em conjunto com o gráfico 4. Pois, o gráfico 5 representa as subclasses de Rendimento do Trabalho e este é abordado no gráfico 4. Assim, para descobrir a real participação de uma subclasse do Rendimento do Trabalho no Rendimento total e variação patrimonial, deve-se multiplicar a participação da subclasse deseja (conforme o gráfico 5) pela participação do Rendimento do Trabalho (conforme o gráfico 4). Por exemplo, para saber a participação do Rendimento do Empregado em relação ao Rendimento total e variação patrimonial para a classe de rendimento que ganha até 1.908 reais, deve-se multiplicar `r paste(format(as.double(empregado[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` (valor da participação do rendimento do Empregado em relação ao Rendimento do Trabalho, conforme gráfico 5) por `r paste(format(as.double(rendimento_trabalho[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` (valor da participação da Rendimento do Trabalho em relação Rendimento total e variação patrimonial, conforme gráfico 4), que é igual a **`r paste(format(as.double(empregado[1, "percentual"] * rendimento_trabalho[1, "percentual"] / 100), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")`**, ou seja, este valor representa a participação do rendimento do Empregado em relação ao Rendimento total e variação patrimonial.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ordem_trabalho <- c("Conta própria",
+                    "Empregador",
+                    "Empregado")
+
+a <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Rendimento do trabalho") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total)) %>%  
+  ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = total, 
+             fill = fct_relevel(origem_rendimento, ordem_trabalho))) +
+  geom_col(position = "fill", colour = "black") +
+  labs(x = "Classes de rendimento",
+       y = "Participação",
+       fill = "Rendimento do Trabalho",
+       title = " Gráfico 5 -  Distribuição do rendimento trabalho médio mensal familiar,  por classes de rendimento - Maranhão (2017-2018)",
+       caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = percent(percentual, big.mark = ".", decimal.mark = ",")),
+            position = position_fill(.5), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(legend.position = "bottom",
+        axis.title.y = element_text(size=12, face="bold"),
+        axis.title.x = element_text(size=12, face="bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = percent)
+a + scale_fill_brewer(palette="Reds")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+transferencia_geral <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Transferência") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total) * 100)
+
+transferencia <- rendimento_total_var_patrim_2017_2018 %>% 
+  group_by(classes_rendimento, n2) %>% 
+  summarise(total = sum(rendimento)) %>%
+  mutate(percentual = total/ sum(total) * 100) %>% 
+  filter(n2 == "Transferência")
+
+
+
+t_menos_1908 <- transferencia_geral %>%
+  filter(classes_rendimento == "até 1908") %>% 
+  arrange(desc(percentual))
+
+entre_1908__2862 <- transferencia_geral %>%
+  filter(classes_rendimento == "mais de 1908 a 2862") %>% 
+  arrange(desc(percentual))
+```
+
+Como as Transferências têm grande peso na composição de rendimento das duas classes com menor rendimento, optou-se por demonstrar a decomposição do rendimento vindo de Transferências para essas classes. No caso da classe que ganha **menos de 1.908 reais**, dos `r paste(format(as.double(transferencia[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")`, valor que corresponde a participação da Transferência no rendimento dessa classe, `r paste(format(as.double(t_menos_1908[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` é fruto de `r t_menos_1908[1, "origem_rendimento"]`, cerca de `r paste(format(as.double(t_menos_1908[2, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` tem como origem `r t_menos_1908[2, "origem_rendimento"]`. Os demais itens de Transferência  possuem pouco impacto (`r t_menos_1908[3, "origem_rendimento"]`: `r paste(format(as.double(t_menos_1908[3, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")`, `r t_menos_1908[4, "origem_rendimento"]`: `r paste(format(as.double(t_menos_1908[4, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")` e `r t_menos_1908[5, "origem_rendimento"]`: `r paste(format(as.double(t_menos_1908[5, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")`). Para a camada que ganha **mais 1.908 a 2.862 reais**, a composição do rendimento proveniente de Transferências é `r paste(format(as.double(entre_1908__2862[1, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` para `r entre_1908__2862[1, "origem_rendimento"]`, cerca de `r paste(format(as.double(entre_1908__2862[2, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` tem como origem `r entre_1908__2862[2, "origem_rendimento"]`. Os demais itens de Transferência  possuem pouco impacto (`r entre_1908__2862[3, "origem_rendimento"]`: `r paste(format(as.double(entre_1908__2862[3, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")`, `r entre_1908__2862[4, "origem_rendimento"]`: `r paste(format(as.double(entre_1908__2862[4, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")` e `r entre_1908__2862[5, "origem_rendimento"]`: `r paste(format(as.double(entre_1908__2862[5, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")`).
+
+Por último, destaca-se que o gráfico citado deve ser analisado em conjunto com o gráfico 4. Pois, o gráfico 6 representa as subclasses de Transferência e esta é abordada no gráfico 4. Assim, para descobrir a real participação de uma subclasse de Transferência no Rendimento total e variação patrimonial, deve-se multiplicar a participação da subclasse deseja (conforme o gráfico 6) pela participação da Transferência (conforme o gráfico 4). Por exemplo, para saber a participação do Aposentadoria e pensão do INSS em relação ao Rendimento total e variação patrimonial para a classe de rendimento que ganha mais de 23.850 reais, deve-se multiplicar `r paste(format(as.double(transferencia_geral[7, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 3), "%", sep = "")` (valor da participação da Aposentadoria e pensão do INSS em relação à Transferências, conforme gráfico 6) por `r paste(format(as.double(transferencia[7, "percentual"]), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")` (valor da participação da Transferência em relação Rendimento total e variação patrimonial, conforme gráfico 4), que é igual a **`r paste(format(as.double(empregado[1, "percentual"] * transferencia[7, "percentual"] / 100), big.mark = ".", decimal.mark = ",", digits = 2), "%", sep = "")`**, ou seja, este valor representa a participação da Aposentadoria e pensão do INSS em relação ao Rendimento total e variação patrimonial. Por tanto, olhe este gráfico com cautela e conforme solicitado.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ordem_transferenica <- c("Outras transferências",
+                         "Pensão alimentícia, mesada ou doação",
+                         "Programas sociais federais",
+                         "Aposentadoria, pensão da previdência privada",
+                         "Aposentadoria, pensão da previdência pública",
+                         "Aposentadoria e pensão do INSS")
+
+a <- rendimento_total_var_patrim_2017_2018 %>% 
+  filter(n2 == "Transferência") %>% 
+  #filter(origem_rendimento == "Empregado") %>% 
+  group_by(origem_rendimento, classes_rendimento) %>% 
+  summarise(total = sum(rendimento)) %>% 
+  group_by(classes_rendimento) %>% 
+  mutate(percentual = total/sum(total)) %>% 
+    ggplot(aes(x = fct_relevel(classes_rendimento, ordem_classes), 
+             y = total, 
+             fill = fct_relevel(origem_rendimento, ordem_transferenica))) +
+  geom_col(position = "fill", colour = "black") +
+  labs(x = "Classes de rendimento",
+       y = "Participação",
+       fill = "Transferência",
+       title = " Gráfico 6 -  Distribuição do rendimento de transferências médio mensal familiar,  por classes de rendimento\nMaranhão (2017-2018)",
+       caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+  geom_text(aes(label = percent(percentual, big.mark = ".", decimal.mark = ",")),
+            position = position_fill(.5), vjust = 0.5, hjust = 0.5,
+            check_overlap = TRUE,
+             size = 5) + 
+  theme_bw(14) +
+  theme(legend.position = "bottom",
+        axis.title.y = element_text(size=12, face="bold"),
+        axis.title.x = element_text(size=12, face="bold")) + 
+  guides(
+    fill = guide_legend(reverse=TRUE),
+    color = guide_legend(
+      nrow = 1,
+      override.aes = list(size = 4))) +
+  scale_y_continuous(labels = percent)
+a + scale_fill_brewer(palette="Reds")
+```
+
+
+# REFERÊNCIAS {-}
+
+INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA – IBGE. **Pesquisa de Orçamentos Familiares
+2017 – 2018:** manual do agente de pesquisa. Rio de Janeiro: IBGE, 2017.
+
+
+
+
