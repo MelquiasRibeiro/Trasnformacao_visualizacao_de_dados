@@ -1,5 +1,5 @@
 ﻿getwd()
-setwd('C:/Users/Melquias/Desktop/OMT/POF/') #
+setwd('C:/Users/Melquias/Desktop/OMT/POF/') 
 library(tidyverse)
 library(readxl)
 library(dplyr)
@@ -54,7 +54,7 @@ ggplot(Rendimento_do_trabalho, aes(x =`Classes de Renda`, y = Rendimento, fill =
   geom_bar(stat="identity", position = "dodge") + 
   labs(x="", y="Rendimento em R$", title="Rendimento total do trabalho em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 #=================================Transferência========================================================
 
 
@@ -63,7 +63,7 @@ ggplot(Transferência, aes(x = `Classes de Renda`, y = Rendimento, fill = origem
   geom_bar(stat="identity", position = "dodge") + 
   labs(x="", y="Rendimento em R$", title="Rendimento total de transferências em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 
 
 #=================================Aluguel========================================================
@@ -73,7 +73,7 @@ ggplot(Rendimento_de_aluguel, aes(x = `Classes de Renda`, y = Rendimento, fill =
   geom_bar(stat="identity", position = "dodge") + 
   labs(x="", y="Rendimento em R$", title="Rendimento total de aluguel em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 
 #=================================outros========================================================
 
@@ -82,7 +82,7 @@ ggplot(Outras_rendas, aes(x = `Classes de Renda`, y = Rendimento, fill = origem_
   geom_bar(stat="identity", position = "dodge") + 
   labs(x="", y="Rendimento em R$", title="Rendimento total de Outras fontes de renda em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 
 #=================================Não monetários========================================================
 Rendimento_não_monetario<-rendimento_total_var_patrim_2017_2018[85:91,]
@@ -91,7 +91,8 @@ ggplot(Rendimento_não_monetario, aes(x = `Classes de Renda`, y = Rendimento, fi
   geom_bar(stat="identity", position = "dodge") + 
   labs(x="", y="Rendimento em R$", title=" Rendimentos não monetarios em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
+
 #=================================Numero de familias========================================================
 Numero_de_familias<-rendimento_total_var_patrim_2017_2018[99:105,] 
 
@@ -99,7 +100,7 @@ ggplot(Numero_de_familias, aes(x = `Classes de Renda`, y = Rendimento, fill = or
   geom_bar(stat="identity") + 
   labs(x="", y="qunatidade de familias", title=" Numero de familias em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 
 
 #=================================Tamnho das familias========================================================
@@ -109,6 +110,6 @@ ggplot(tamanho_de_familias, aes(x = `Classes de Renda`, y = Rendimento, fill = o
   geom_bar(stat="identity") + 
   labs(x="", y="Numero de pessoas", title=" Tamanho das familias em suas categorias") + 
   guides(fill=guide_legend(title= NULL))+
-   theme_economist()
+  theme_economist()
 
 View(Numero_de_familias)
