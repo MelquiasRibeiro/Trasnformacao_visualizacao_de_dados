@@ -6,14 +6,11 @@ date: "29/10/2019"
 output:
   pdf_document:
     toc: true
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+    
 ---
-
-<style>
-body {
-text-align: justify}
-</style>
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -177,15 +174,15 @@ No estado, existiam  **`r format(sum(n_familias_2017_2018$valor), big.mark = "."
   geom_col(fill = "darksalmon", position = "stack", colour = "black", show.legend = FALSE) +
   labs(x = "Classes de rendimento",
        y = "Número de famílias",
-       title = " Gráfico 1 -  Quantidade de famílias maranhenses por classes de rendimento (2017-2018)",
+       title = " Gráfico 1 -  Quantidade de famílias maranhenses \npor classes de rendimento (2017-2018)",
               caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
   geom_text(aes(label = number(valor, big.mark = ".", decimal.mark = ",")),
             position = position_stack(0.9), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
-  theme(axis.title.y = element_text(size = 12, face = "bold"),
-        axis.title.x = element_text(size = 12, face = "bold")) + 
+  theme_bw(12) +
+  theme(axis.title.y = element_text(size = 10, face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
@@ -217,15 +214,15 @@ t_familias_2017_2018 %>%
   geom_col(fill = "darksalmon", position = "stack", colour = "black", show.legend = FALSE) +
   labs(x = "Classes de rendimento",
        y = "Tamanho médio",
-       title = " Gráfico 2 -  Tamanho médio das famílias maranhenses por classes de rendimento (2017-2018)",
+       title = " Gráfico 2 -  Tamanho médio das famílias maranhenses \npor classes de rendimento (2017-2018)",
               caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
   geom_text(aes(label = number(valor, big.mark = ".", decimal.mark = ",", digits = 2, accuracy = .01)),
             position = position_stack(0.9), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
-  theme(axis.title.y = element_text(size = 12, face = "bold"),
-        axis.title.x = element_text(size = 12, face = "bold")) + 
+  theme_bw(12) +
+  theme(axis.title.y = element_text(size = 10, face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
@@ -251,16 +248,18 @@ a <- rendimento_total_var_patrim_2017_2018 %>%
   labs(x = "Classes de rendimento",
        y = "Valor do Rendimento (R$)",
        fill = "Rendimento e variação patrimonial",
-       title = " Gráfico 3 -  Rendimento total e variação patrimonial médio mensal familiar,  por classes de rendimento total e variação\npatrimonial mensal familiar - Maranhão (2017-2018)",
-              caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
+       title = " Gráfico 3 -  Rendimento total e variação patrimonial médio mensal familiar,
+       \npor classes de rendimento total e variação\npatrimonial mensal familiar - Maranhão 
+       \n(2017-2018)",
+       caption = "Fonte: IBGE, Diretoria de Pesquisas, Coordenação de Trabalho e Rendimento, Pesquisa de Orçamentos Familiares 2017-2018.\nElaboração: OMT-MA\nNota: a classe de rendimento até 1.908 reais inclui também sem rendimento.") +
   geom_text(aes(label = number(total, big.mark = ".", decimal.mark = ",")),
             position = position_stack(.5), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
+  theme_bw(12) +
   theme(legend.position = "bottom",
-        axis.title.y = element_text(size = 12, face = "bold"),
-        axis.title.x = element_text(size = 12, face = "bold")) + 
+        axis.title.y = element_text(size = 10, face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
@@ -304,10 +303,10 @@ a <- rendimento_total_var_patrim_2017_2018 %>%
             position = position_fill(.5), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
+  theme_bw(12) +
   theme(legend.position = "bottom",
-        axis.title.y = element_text(size=12, face="bold"),
-        axis.title.x = element_text(size=12, face="bold")) + 
+        axis.title.y = element_text(size=10, face="bold"),
+        axis.title.x = element_text(size=10, face="bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
@@ -390,10 +389,10 @@ a <- rendimento_total_var_patrim_2017_2018 %>%
             position = position_fill(.5), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
+  theme_bw(12) +
   theme(legend.position = "bottom",
-        axis.title.y = element_text(size=12, face="bold"),
-        axis.title.x = element_text(size=12, face="bold")) + 
+        axis.title.y = element_text(size=10, face="bold"),
+        axis.title.x = element_text(size=10, face="bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
@@ -463,10 +462,10 @@ a <- rendimento_total_var_patrim_2017_2018 %>%
             position = position_fill(.5), vjust = 0.5, hjust = 0.5,
             check_overlap = TRUE,
              size = 5) + 
-  theme_bw(14) +
+  theme_bw(11) +
   theme(legend.position = "bottom",
-        axis.title.y = element_text(size=12, face="bold"),
-        axis.title.x = element_text(size=12, face="bold")) + 
+        axis.title.y = element_text(size=10, face="bold"),
+        axis.title.x = element_text(size=10, face="bold")) + 
   guides(
     fill = guide_legend(reverse=TRUE),
     color = guide_legend(
