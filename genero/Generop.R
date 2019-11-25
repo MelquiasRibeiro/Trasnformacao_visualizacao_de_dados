@@ -23,8 +23,8 @@ ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor)
        color="Nível Territorial")+
   geom_point(size=5)+
   geom_text(aes(label=round(dados2$Valor,1)), size=3, 
-               hjust=0.5, vjust=0.5, shape=21, colour="#000000")+
-  theme_grey()+ theme(axis.text.x=element_text(angle=90, hjust=1))+
+               hjust=0.5, vjust=-1,colour="#000000")+
+  theme_grey()+ theme(axis.text.x=element_text(angle=45, hjust=1))+
   theme(legend.title = element_text(size=10))+
   theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
 
@@ -54,8 +54,8 @@ ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor)
        color="Nível Territorial")+
   geom_point(size=5)+
   geom_text(aes(label=round(dados2$Valor,1)), size=3, 
-               hjust=0.5, vjust=0.5, shape=21, colour="#000000")+
-  theme_grey()+ theme(axis.text.x=element_text(angle=90, hjust=1))+
+               hjust=0.5, vjust=-1, colour="#000000")+
+  theme_grey()+ theme(axis.text.x=element_text(angle=45, hjust=1))+
   theme(legend.title = element_text(size=10))+
   theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
 
@@ -86,7 +86,7 @@ ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor)
        color="Nível Territorial")+
   geom_point(size=5)+
   geom_text(aes(label=round(dados2$Valor,1)), size=3, 
-               hjust=0.5, vjust=0.5, shape=21, colour="#000000")+
+               hjust=0.5, vjust=-1,colour="#000000")+
   theme_grey()+ theme(axis.text.x=element_text(angle=45, hjust=1))+
   theme(legend.title = element_text(size=10))+
   theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
@@ -114,7 +114,7 @@ ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor)
        color="Nível Territorial")+
   geom_point(size=5)+
   geom_text(aes(label=round(dados2$Valor,1)), size=3, 
-               hjust=0.5, vjust=0.5, shape=21, colour="#000000")+
-  theme_grey()+ theme(axis.text.x=element_text(angle=90, hjust=1))+
+               hjust=0.5, vjust=-1,colour="#000000")+
+  theme_grey()+ theme(axis.text.x=element_text(angle=45, hjust=1))+
   theme(legend.title = element_text(size=10))+
   theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
