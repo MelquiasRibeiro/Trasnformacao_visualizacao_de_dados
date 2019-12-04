@@ -17,7 +17,7 @@ dados2$D3N <-factor(dados2$D3N, levels = unique(dados2$D3N[order(dados2$D3C)])) 
 
 ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor), group = Territorio))+
   geom_line(size=1.5)+
-  xlab('')+ylab('Em mil')+
+  xlab('')+ylab('%')+
   labs(title=' Distribuição percentual das mulheres de 14 anos ou mais de idade, na força de trabalho, na semana de referência ',
        caption='Fonte: PNAD Contínua/IBGE. Elaboração: OMT-MA.', 
        color="Nível Territorial")+
@@ -51,7 +51,7 @@ dados2$D3N <-factor(dados2$D3N, levels = unique(dados2$D3N[order(dados2$D3C)])) 
 
 ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor), group = Territorio))+
   geom_line(size=1.5)+
-  xlab('')+ylab('Em mil')+
+  xlab('')+ylab('%')+
   labs(title='Distribuição percentual das mulheres de 14 anos ou mais de idade, fora da força de trabalho na semana de referência (em mil)',
        caption='Fonte: PNAD Contínua/IBGE. Elaboração: OMT-MA.', 
        color="Nível Territorial")+
@@ -83,7 +83,7 @@ dados2$D3N <-factor(dados2$D3N, levels = unique(dados2$D3N[order(dados2$D3C)])) 
 
 ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor), group = Territorio))+
   geom_line(size=1.5)+
-  xlab('')+ylab('Em mil')+
+  xlab('')+ylab('%')+
   labs(title='Distribuição percentual das mulheres de 14 anos ou mais de idade, ocupadas na semana de referência (em mil)',
        caption='Fonte: PNAD Contínua/IBGE. Elaboração: OMT-MA.', 
        color="Nível Territorial")+
@@ -118,7 +118,7 @@ dados2$D3N <-factor(dados2$D3N, levels = unique(dados2$D3N[order(dados2$D3C)])) 
 
 ggplot(dados2, aes(x=D3N, y=Valor, colour = fct_reorder2(Territorio, D3N, Valor), group = Territorio))+
   geom_line(size=1.5)+
-  xlab('')+ylab('Em mil')+
+  xlab('')+ylab('%')+
   labs(title='Distribuição percentual das mulheres de 14 anos ou mais de idade, desocupadas na semana de referência (em mil)',
        caption='Fonte: PNAD Contínua/IBGE. Elaboração: OMT-MA.', 
        color="Nível Territorial")+
