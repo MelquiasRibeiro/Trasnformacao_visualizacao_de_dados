@@ -38,23 +38,21 @@ dados<-get_sidra(api="/t/2981/n1/all/n2/2/n3/21/n6/2111300/v/1001643/p/all/c1240
 dados<-dados %>% dplyr::rename(Territorio = `Brasil, Grande Região, Unidade da Federação e Município`)
 
 dados2<-dados %>% select( `Valor`, `Territorio`, `Sexo`) 
-dados2%>%
+
+dados2 %>%
 ggplot(aes(x =`Territorio`, y = Valor, fill =`Sexo`)) + 
   geom_bar(stat="identity", position = "dodge") + 
-  labs(x="", y="%", title="Percentual do total geral de pessoas de 25 anos ou mais de idade com ensino medio completo") + 
-  guides(fill=guide_legend(title= NULL))
+  labs(x="", y="%", title="Percentual do total geral de pessoas de 25 anos ou mais de idade com ensino medio completo",
+       caption='Fonte: Censo Demográfico/IBGE. Elaboração: OMT-MA.')+
+  guides(fill=guide_legend(title= NULL))+
+  theme_grey()+ theme(axis.text.x=element_text(angle=0, hjust=1))+
+  theme(legend.title = element_text(size=10))+
+  theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
   
-  
+    
 
 View(dados2)
 glimpse(dados2)
 
-#dados<-get_sidra(api="/t/2981/n1/all/n2/2/n3/21/n6/2111300/v/allxp/p/all/c12400/108885/c2/allxt/c1/0/c58/0/d/v1643%200")
-#dados<-dados %>% dplyr::rename(Territorio = `Brasil, Grande Região, Unidade da Federação e Município`)
-#dados2<-dados %>% select( `Valor`, `Territorio`, `Sexo`) 
-#dados2%>%
-#ggplot(aes(x =`Territorio`, y = Valor, fill =`Sexo`)) + 
-#geom_bar(stat="identity", position = "dodge") + 
-#labs(x="", y="%", title="Número absoluto de pessoas com 25 anos ou mais com ensino médio concluído") + 
-#guides(fill=guide_legend(title= NULL))
+
   

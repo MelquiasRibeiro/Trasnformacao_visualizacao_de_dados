@@ -1,0 +1,30 @@
+Coluna;Sexo Trabalhador;Escolaridade Agreg após 2005
+Ano;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino
+;Analfabeto;Até 5ª Incompleto;5ª Completo Fundamental;6ª a 9ª Fundamental;Fundamental Completo;Médio Incompleto;Médio Completo;Superior Incompleto;Superior Completo;Total;Analfabeto;Até 5ª Incompleto;5ª Completo Fundamental;6ª a 9ª Fundamental;Fundamental Completo;Médio Incompleto;Médio Completo;Superior Incompleto;Superior Completo;Total
+2018;2022;11029;8454;15474;34053;17660;231598;10280;68032;398602;243;2228;2385;3745;14387;7556;175927;13444;128626;348541
+2017;2252;11459;8648;16170;35273;26075;218953;9224;55351;383405;235;2079;2404;4018;14717;23847;167404;10940;104002;329646
+2016;2391;12295;9084;16880;37502;27373;214569;10188;48919;379201;219;1832;2146;4463;16473;26985;168883;10942;89056;320999
+2015;2732;14735;11727;20123;38076;29020;222490;8614;49207;396724;281;2597;2677;4690;14024;27371;174617;11241;88644;326142
+2014;3218;17181;13185;22256;50919;22337;224129;8507;46885;408617;95;2342;2752;4461;36617;8186;180696;10597;84463;330209
+2013;3466;16623;13047;23982;67450;24011;206619;7539;41797;404534;92;2002;2678;4598;48180;8477;166734;10015;74180;316956
+2012;3501;17755;13893;24570;58440;24484;196115;7244;50664;396666;91;2311;3461;5127;29500;8413;164594;9942;76243;299682
+Total;19582;101077;78038;139455;321713;170960;1514473;61596;360855;2767749;1256;15391;18503;31102;173898;110835;1198855;77121;645214;2272175
+
+Seleções vigentes
+Variável;Critério;Valor
+Ano;igual a;2018
+;;2017
+;;2016
+;;2015
+;;2014
+;;2013
+;;2012
+Vínculo Ativo 31/12;igual a;Sim
+Sexo Trabalhador;igual a;Feminino
+;;Masculino
+IBGE Gr Setor;igual a;1 - Indústria
+;;2 - Construção Civil
+;;3 - Comércio
+;;4 - Serviços
+;;5 - Agropecuária
+UF;igual a;21 - Maranhão

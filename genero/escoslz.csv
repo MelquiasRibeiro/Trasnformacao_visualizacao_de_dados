@@ -1,0 +1,30 @@
+Coluna;Sexo Trabalhador;Escolaridade Agreg após 2005
+Ano;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Masculino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino;Feminino
+;Analfabeto;Até 5ª Incompleto;5ª Completo Fundamental;6ª a 9ª Fundamental;Fundamental Completo;Médio Incompleto;Médio Completo;Superior Incompleto;Superior Completo;Total;Analfabeto;Até 5ª Incompleto;5ª Completo Fundamental;6ª a 9ª Fundamental;Fundamental Completo;Médio Incompleto;Médio Completo;Superior Incompleto;Superior Completo;Total
+2018;287;2784;3182;4187;10447;5616;115882;6019;38853;187257;49;982;1159;1183;3156;2505;79328;7022;57694;153078
+2017;335;2828;3151;4424;11395;13517;110145;5478;30079;181352;43;823;1156;1320;3010;18676;75466;5454;42453;148401
+2016;320;2674;3310;4667;14678;14315;107433;6692;27955;182044;65;630;939;1394;6091;21214;75254;5365;38237;149189
+2015;449;3863;4156;5961;13571;14717;111565;4778;27410;186470;57;1017;1235;1340;3243;21111;75618;5029;37854;146504
+2014;644;5189;6173;8282;26835;8458;115989;4775;26121;202466;39;842;1406;1452;25981;3028;77731;4882;36297;151658
+2013;580;3966;4777;8844;42340;9231;104561;3677;23573;201549;36;564;952;1444;35666;3083;70317;4126;32515;148703
+2012;575;3764;3739;8299;35995;9800;103734;3570;33142;202618;42;558;933;1369;19728;2792;70123;4024;46234;145803
+Total;3190;25068;28488;44664;155261;75654;769309;34989;207133;1343756;331;5416;7780;9502;96875;72409;523837;35902;291284;1043336
+
+Seleções vigentes
+Variável;Critério;Valor
+Ano;igual a;2018
+;;2017
+;;2016
+;;2015
+;;2014
+;;2013
+;;2012
+Vínculo Ativo 31/12;igual a;Sim
+Sexo Trabalhador;igual a;Feminino
+;;Masculino
+Município;igual a;MA-SAO LUIS
+IBGE Gr Setor;igual a;1 - Indústria
+;;2 - Construção Civil
+;;3 - Comércio
+;;4 - Serviços
+;;5 - Agropecuária
