@@ -20,7 +20,7 @@ EscolaridadeSlz <- read_xlsx("escoslz.xlsx",
                          sheet = 1,
                             )
 
-
+View(EscolaridadeSlz)
 #pivotando o data frame para se encaixar no padrão que o ggplot trabalha
 EscolaridadeSlz  %>% pivot_longer(
   cols = `Analfabeto`:`Superior Completo` ,
@@ -32,13 +32,14 @@ Medio <-EscolaridadeSlz %>%
   filter(`Variável`== "Médio Completo")
   
 Medio<- as.data.frame(Medio)
-
+View(Medio)
 
 Superior <-EscolaridadeSlz %>% 
   select(`Valor`, `Variável`, `Sexo`,Ano ) %>% 
   filter(`Variável`== "Superior Completo")
 
 Superior<- as.data.frame(Superior)
+View(Superior)
 
 #grafico de barras ensino medio
 
