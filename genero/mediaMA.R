@@ -33,14 +33,17 @@ Media  %>% pivot_longer(
 Media<- as.data.frame(Media)
 View(Media)
 
+Media$Variável <-factor(Media$Variável, levels = unique(Media$Variável[order(Media$Valor)]))
+
 #grafico de barras ensino medio
 
 Media %>%
 ggplot(aes(x =`Variável`, y = Valor, fill =`Variável`)) + 
   geom_bar(stat="identity") + 
-  labs(x="Ano", y="quantidade de pessoas", title="Media da Razão de Homens e Mulheres empregados em todos o principais setores do Maranhão",
+  labs(x="Ano", y="homens / mulheres", title="Media da Razão de Homens e Mulheres empregados em todos o principais setores do Maranhão",
        caption='Fonte: Rais-Elaboração: OMT-MA.')+
   geom_text(aes(label=round(Media$Valor,3)), size=3, 
        hjust=1, vjust=-1, colour="#000000")+
-  guides(fill=guide_legend(title= "Sexo"))
+  guides(fill=guide_legend(title= "Sexo"))+
+  theme_grey()+ theme(axis.text.x=element_text(angle=45, hjust=1))
 

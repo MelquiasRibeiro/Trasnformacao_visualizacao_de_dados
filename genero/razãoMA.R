@@ -46,5 +46,4 @@ ggplot(aes(x =`Ano`, y = Valor, fill =`Variável`)) +
   guides(fill=guide_legend(title= "Sexo"))+
   theme_grey()+ theme(axis.text.x=element_text(angle=0, hjust=1))+
   theme(legend.title = element_text(size=10, color = "black", face = "bold"))+
-  theme(plot.title = element_text(color = "a", size = 14, face = "bold"))
-
+  theme(plot.title = element_text(color = "black", size = 14, face = "bold"))

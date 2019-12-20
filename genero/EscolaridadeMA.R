@@ -43,7 +43,7 @@ Superior<- as.data.frame(Superior)
 Medio %>%
 ggplot(aes(x =`Ano`, y = Valor, fill =`Sexo`)) + 
   geom_bar(stat="identity", position = "dodge") + 
-  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas em São luis empregadas em todos os grandes setores com ensino medio completo",
+  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas no Maranhão empregadas em todos os grandes setores com ensino medio completo",
        caption='Fonte: Rais-Elaboração: OMT-MA.')+
   geom_text(aes(label=round(Medio$Valor,1)), size=3, 
        hjust=0.5, vjust=-1, colour="#000000")+
@@ -56,7 +56,7 @@ ggplot(aes(x =`Ano`, y = Valor, fill =`Sexo`)) +
 Superior %>%
 ggplot(aes(x =`Ano`, y = Valor, fill =`Sexo`)) + 
   geom_bar(stat="identity", position = "dodge") + 
-  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas em São luis empregadas em todos os grandes setores com ensino superior completo",
+  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas no Maranhão empregadas em todos os grandes setores com ensino superior completo",
        caption='Fonte: Rais-Elaboração: OMT-MA.')+
   geom_text(aes(label=round(Superior$Valor,1)), size=3, 
        hjust=0.5, vjust=-1, colour="#000000")+

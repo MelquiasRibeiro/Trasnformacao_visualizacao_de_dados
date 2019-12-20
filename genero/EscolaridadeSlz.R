@@ -57,17 +57,18 @@ ggplot(aes(x =`Ano`, y = Valor, fill =`Sexo`)) +
 
 
 #grafico de barras ensino superior
-Superior %>%
+Medio %>%
 ggplot(aes(x =`Ano`, y = Valor, fill =`Sexo`)) + 
   geom_bar(stat="identity", position = "dodge") + 
-  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas em São luis empregadas em todos os grandes setores com ensino superior completo",
+  labs(x="Ano", y="quantidade de pessoas", title="Quantidade de pessoas em São luis empregadas em todos os grandes setores com ensino Superior completo",
        caption='Fonte: Rais-Elaboração: OMT-MA.')+
-  geom_text(aes(label=round(Superior$Valor,1)), size=3, 
+  geom_text(aes(label=round(Medio$Valor,1)), size=3, 
        hjust=0.5, vjust=-1, colour="#000000")+
   guides(fill=guide_legend(title= "Sexo"))+
   theme_grey()+ theme(axis.text.x=element_text(angle=0, hjust=1))+
   theme(legend.title = element_text(size=10, color = "black", face = "bold"))+
-  theme(plot.title = element_text(color = "a", size = 14, face = "bold"))
+  theme(plot.title = element_text(color = "black", size = 14, face = "bold"))
+
 
 
 glimpse()
